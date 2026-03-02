@@ -4,31 +4,35 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { CircleX } from "lucide-react";
+import { CircleX, Eye, EyeOff } from "lucide-react";
 
 const BRAND = "#FF8282";
 
-function normalizePhone(input: string) {
-  return input.replace(/[^\d+]/g, "").trim();
+function clean(input: string) {
+  return input.trim();
 }
 
 export default function LoginPanel() {
   const router = useRouter();
 
-  const [phone, setPhone] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState(""); // verification code = password
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const phoneClean = useMemo(() => normalizePhone(phone), [phone]);
-  const canSubmit = phoneClean.length >= 6 && !loading;
+  const u = useMemo(() => clean(username), [username]);
+  const p = useMemo(() => clean(password), [password]);
+
+  const [showPass, setShowPass] = useState(false);
+
+  const canSubmit = u.length > 0 && p.length > 0 && !loading;
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
 
-    const p = normalizePhone(phone);
-    if (!p) {
-      setError("Enter your phone number.");
+    if (!u || !p) {
+      setError("Enter your username and password.");
       return;
     }
 
@@ -37,7 +41,7 @@ export default function LoginPanel() {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone_number: p }),
+        body: JSON.stringify({ username: u, password: p }),
       });
 
       const data = await res.json().catch(() => ({}));
@@ -47,9 +51,7 @@ export default function LoginPanel() {
         return;
       }
 
-      // Demo MVP: guardar datos mínimos
-      localStorage.setItem("stageflow_user", JSON.stringify(data.user));
-
+      localStorage.setItem("stageflow_user", JSON.stringify(data.user || { username: u }));
       router.push(data.redirect_to || "/dash");
     } catch (err) {
       console.error(err);
@@ -61,14 +63,15 @@ export default function LoginPanel() {
 
   return (
     <div className="w-full max-w-md">
-      <div className="absolute bottom-10 left-10">
+      <div className="absolute bottom-10 left-10 hidden lg:block">
         <Image
           src="/stageflow-banner.png"
-          alt="Stage Flow logo"
+          alt="Stage Flow banner"
           width={180}
           height={40}
         />
       </div>
+
       <div className="mb-10">
         <Image
           src="/stageflow.png"
@@ -82,38 +85,47 @@ export default function LoginPanel() {
       <div className="rounded-2xl border border-black/10 bg-white p-7">
         <h1 className="text-lg text-neutral-800 tracking-tight">Sign in</h1>
         <p className="mt-2 text-sm text-neutral-800">
-          Use your staff phone number.
+          Use your Stage Flow credentials.
         </p>
 
         <form className="mt-6 space-y-5" onSubmit={onSubmit}>
           <div>
-            <label className="block text-sm text-neutral-400">
-              Phone number
-            </label>
+            <label className="block text-sm text-neutral-400">Username</label>
             <input
-              inputMode="tel"
-              autoComplete="tel"
-              placeholder="Phone number (e.g. 600 000 000)"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              autoComplete="username"
+              placeholder="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="mt-1 h-11 w-full rounded-xl border border-neutral-200 px-3 text-sm text-neutral-800 outline-none focus:border-neutral-300"
             />
           </div>
 
-          <div className="mb-8">
-            <label className="block text-sm text-neutral-400">
-              Verification code
-            </label>
+          <div className="relative mb-8">
+            <label className="block text-sm text-neutral-400">Password</label>
+
             <input
-              inputMode="text"
-              placeholder="Verification Code (e.g. xX-6as7...kM4)"
-              className="mt-1 h-11 w-full rounded-xl border border-neutral-200 px-3 text-sm text-neutral-800 outline-none focus:border-neutral-300"
+              type={showPass ? "text" : "password"}
+              autoComplete="current-password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 h-11 w-full rounded-xl border border-neutral-200 px-3 pr-12 text-sm text-neutral-800 outline-none focus:border-neutral-300"
             />
+
+            <button
+              type="button"
+              onClick={() => setShowPass((v) => !v)}
+              className="absolute inset-y-0 right-0 mt-6 px-4 text-neutral-500 hover:text-black cursor-pointer flex items-center"
+              aria-label={showPass ? "Hide password" : "Show password"}
+            >
+              {showPass ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
           </div>
 
           {error && (
-            <div className="rounded-xl border border-blue-200 bg-blue-50 p-3 text-sm text-blue-400 flex items-center justify-start">
-              <CircleX size={15} /><span className="pl-2">{error}</span>
+            <div className="flex items-center justify-start rounded-xl border border-blue-200 bg-blue-50 p-3 text-sm text-blue-400">
+              <CircleX size={15} />
+              <span className="pl-2">{error}</span>
             </div>
           )}
 
