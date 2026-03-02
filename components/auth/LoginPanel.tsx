@@ -17,13 +17,13 @@ export default function LoginPanel() {
         <Image
           src="/stageflow-banner.png"
           alt="Stage Flow logo"
-          width={220}
+          width={200}
           height={40}
         />
       </div>
 
       {/* Card */}
-      <div className="rounded-3xl p-7">
+      <div className="rounded-3xl p-4 sm:p-7">
         <div className="w-full flex items-center justify-center">
           <Image
             src="/stageflow.png"
@@ -43,26 +43,35 @@ export default function LoginPanel() {
           onSubmit={(e) => e.preventDefault()}
         >
           <div>
+            <label className="block text-xs text-black/40">
+              Name
+            </label>    
             <input
-              type="name"
-              placeholder="Name"
+              type="text"
+              placeholder="John Doe"
               className="mt-2 h-11 w-full rounded-xl border border-neutral-200 px-3 text-sm text-neutral-800 outline-none focus:border-neutral-300"
             />
           </div>
 
           <div>
+            <label className="block text-xs text-black/40">
+              Email
+            </label>            
             <input
               type="email"
-              placeholder="Email"
-              className="mt-0.5 h-11 w-full rounded-xl border border-neutral-200 px-3 text-sm text-neutral-800 outline-none focus:border-neutral-300"
+              placeholder="john@example.com"
+              className="mt-2 h-11 w-full rounded-xl border border-neutral-200 px-3 text-sm text-neutral-800 outline-none focus:border-neutral-300"
             />
           </div>
 
           <div>
+            <label className="block text-xs text-black/40">
+              Phone Number
+            </label>
             <input
-              type="phone"
-              placeholder="Phone"
-              className="mt-0.5 h-11 w-full rounded-xl border border-neutral-200 px-3 text-sm text-neutral-800 outline-none focus:border-neutral-300"
+              type="tel"
+              placeholder="+1 234 567 890"
+              className="mt-2 h-11 w-full rounded-xl border border-neutral-200 px-3 text-sm text-neutral-800 outline-none focus:border-neutral-300"
             />
           </div>
 
