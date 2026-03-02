@@ -2,5 +2,11 @@
 import DashShell from "@/components/dash/DashShell";
 
 export default function DashLayout({ children }: { children: React.ReactNode }) {
-  return <DashShell>{children}</DashShell>;
+  return (
+    <div className="max-h-screen">
+      <DashShell>
+        {children}
+      </DashShell>
+    </div>
+  );
 }

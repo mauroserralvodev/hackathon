@@ -21,9 +21,9 @@ export default function DashShell({ children }: { children: React.ReactNode }) {
   const year = new Date().getFullYear();
 
   return (
-    <div className="max-h-screen bg-white">
+    <div className="max-h-screen">
       {/* Mobile top bar */}
-      <div className="sticky top-0 z-40 flex items-center justify-between border-b border-neutral-200 bg-white px-4 py-3 lg:hidden">
+      <div className="sticky top-0 z-9999 flex items-center justify-between border-b border-black/10 bg-white px-4 py-3 lg:hidden">
         <Link href={"/"} className="cursor-pointer">
           <Image
             src="/stageflow.png"
@@ -46,7 +46,7 @@ export default function DashShell({ children }: { children: React.ReactNode }) {
       {/* Mobile drawer (keep mounted for smooth animation) */}
       <div
         className={[
-          "fixed inset-0 z-50 lg:hidden",
+          "fixed inset-0 lg:hidden z-9999",
           open ? "pointer-events-auto" : "pointer-events-none",
         ].join(" ")}
         role="dialog"
@@ -98,8 +98,8 @@ export default function DashShell({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* Desktop shell */}
-      <div className="mx-auto grid min-h-screen grid-cols-1 lg:grid-cols-[260px_1fr] py-3">
-        <aside className="hidden border-r border-y border-black/10 rounded-r-2xl lg:block">
+      <div className="mx-auto grid min-h-screen grid-cols-1 lg:grid-cols-[260px_1fr] py-3 bg-neutral-50">
+        <aside className="hidden border-r border-y border-black/10 bg-white rounded-r-2xl lg:block">
           <div className="p-4 h-[calc(100vh-1.5rem)] flex flex-col">
             {/* top */}
             <div>

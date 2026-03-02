@@ -13,10 +13,16 @@ type Props = {
 export default function SidebarNav({ onNavigate }: Props) {
   const pathname = usePathname();
 
+  // const items = [
+  //   { href: "/dash/staff", label: "Staff" },
+  //   { href: "/dash/admin", label: "Admin" },
+  // ];
+
   const items = [
-    { href: "/dash/staff", label: "Staff" },
-    { href: "/dash/admin", label: "Admin" },
+    { href: "/dash/team-config", label: "Team Config" },
+    { href: "/dash/map", label: "Map" },
   ];
+
 
   return (
     <nav className="space-y-2">
@@ -31,7 +37,7 @@ export default function SidebarNav({ onNavigate }: Props) {
             className={[
               "block rounded-xl border px-3 py-2 text-sm text-neutral-800 transition",
               active
-                ? "border-black/10 bg-neutral-100"
+                ? "border-black/10 bg-neutral-50"
                 : "border-black/10 hover:bg-neutral-50",
             ].join(" ")}
           >

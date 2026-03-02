@@ -139,19 +139,19 @@ export default function TeamConfigPage() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-2xl border border-black/5 bg-white p-6 text-neutral-800">
+      <section className="rounded-2xl border border-black/10 bg-white p-6 text-neutral-800">
         <p className="text-lg tracking-tight">Team configuration</p>
-        <p className="mt-2 text-sm text-neutral-600">
+        <p className="mt-2 text-sm text-neutral-500">
           Track who is on-site, their contact number, and responsibilities. This
           table will hydrate with your backend once the endpoint is ready.
         </p>
       </section>
 
-      <section className="rounded-2xl border border-black/5 bg-white">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-black/5 px-6 py-4">
+      <section className="rounded-2xl border border-black/10 bg-white">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-black/10 px-6 py-4">
           <div>
-            <p className="text-base font-medium text-neutral-900">Team members</p>
-            <p className="text-xs text-neutral-500">
+            <p className="text-lg tracking-tight text-neutral-900">Team members</p>
+            <p className="mt-2 text-sm text-neutral-500">
               {loading
                 ? "Loading data from the roster service..."
                 : usingFallback
@@ -164,13 +164,13 @@ export default function TeamConfigPage() {
             type="button"
             onClick={() => setRefreshIndex((value) => value + 1)}
             disabled={loading}
-            className="rounded-xl border border-neutral-300 px-4 py-2 text-sm text-neutral-700 transition hover:border-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg border border-black/10 bg-neutral-50 cursor-pointer px-4 py-2 text-sm text-neutral-700 transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? "Refreshing..." : "Refresh"}
           </button>
         </div>
 
-        <div className="px-2 pb-2">
+        <div className="">
           <DataTable
             value={members}
             loading={loading}
@@ -201,7 +201,7 @@ export default function TeamConfigPage() {
         </div>
 
         {error && (
-          <div className="border-t border-black/5 bg-neutral-50 px-6 py-4 text-xs text-neutral-600">
+          <div className="px-6 py-4 text-xs text-neutral-600">
             {error}
           </div>
         )}
