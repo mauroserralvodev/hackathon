@@ -23,7 +23,7 @@ export default function DashShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="max-h-screen bg-white">
       {/* Mobile top bar */}
-      <div className="sticky top-0 z-40 flex items-center justify-between border-b border-neutral-200 bg-white px-4 py-3 lg:hidden">
+      <div className="sticky top-0 z-9999 flex items-center justify-between border-b border-neutral-200 bg-white px-4 py-3 lg:hidden">
         <Link href={"/"} className="cursor-pointer">
           <Image
             src="/stageflow.png"
@@ -46,7 +46,7 @@ export default function DashShell({ children }: { children: React.ReactNode }) {
       {/* Mobile drawer (keep mounted for smooth animation) */}
       <div
         className={[
-          "fixed inset-0 z-50 lg:hidden",
+          "fixed inset-0 lg:hidden z-9999",
           open ? "pointer-events-auto" : "pointer-events-none",
         ].join(" ")}
         role="dialog"

@@ -13,10 +13,16 @@ type Props = {
 export default function SidebarNav({ onNavigate }: Props) {
   const pathname = usePathname();
 
+  // const items = [
+  //   { href: "/dash/staff", label: "Staff" },
+  //   { href: "/dash/admin", label: "Admin" },
+  // ];
+
   const items = [
-    { href: "/dash/staff", label: "Staff" },
-    { href: "/dash/admin", label: "Admin" },
+    { href: "/dash/team-config", label: "Team Config" },
+    { href: "/dash/map", label: "Map" },
   ];
+
 
   return (
     <nav className="space-y-2">
