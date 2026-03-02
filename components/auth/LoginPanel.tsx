@@ -61,6 +61,14 @@ export default function LoginPanel() {
 
   return (
     <div className="w-full max-w-md">
+      <div className="absolute bottom-10 left-10">
+        <Image
+          src="/stageflow-banner.png"
+          alt="Stage Flow logo"
+          width={180}
+          height={40}
+        />
+      </div>
       <div className="mb-10">
         <Image
           src="/stageflow.png"
@@ -79,7 +87,7 @@ export default function LoginPanel() {
 
         <form className="mt-6 space-y-5" onSubmit={onSubmit}>
           <div>
-            <label className="block text-sm text-neutral-800">
+            <label className="block text-sm text-neutral-400">
               Phone number
             </label>
             <input
@@ -88,6 +96,17 @@ export default function LoginPanel() {
               placeholder="Phone number (e.g. 600 000 000)"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
+              className="mt-1 h-11 w-full rounded-xl border border-neutral-200 px-3 text-sm text-neutral-800 outline-none focus:border-neutral-300"
+            />
+          </div>
+
+          <div className="mb-8">
+            <label className="block text-sm text-neutral-400">
+              Verification code
+            </label>
+            <input
+              inputMode="text"
+              placeholder="Verification Code (e.g. xX-6as7...kM4)"
               className="mt-1 h-11 w-full rounded-xl border border-neutral-200 px-3 text-sm text-neutral-800 outline-none focus:border-neutral-300"
             />
           </div>
