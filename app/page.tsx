@@ -14,7 +14,7 @@ export default function Page() {
             alt="Festival background"
             fill
             priority
-            className="object-cover opacity-75"
+            className="object-cover opacity-65"
           />
         </section>
 
