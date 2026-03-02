@@ -1,44 +1,81 @@
 "use client";
 
-import { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { useMemo, useRef } from "react";
+import { MapContainer, TileLayer, Marker, Popup, Polygon } from "react-leaflet";
 import L from "leaflet";
-
-export interface MapMarker {
-  lat: number;
-  lng: number;
-  label?: string;
-}
+import type { MapMarker, MapMarkerRole, MapZone } from "@/types/map";
 
 interface MapComponentProps {
   markers: MapMarker[];
+  zones?: MapZone[];
   center?: [number, number];
   zoom?: number;
   className?: string;
 }
 
-const customIcon = L.icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
+const ROLE_COLORS: Record<string, string> = {
+  stage: "#ef4444",
+  food: "#f59e0b",
+  info: "#3b82f6",
+  support: "#8b5cf6",
+  entry: "#22c55e",
+};
+
+function getRoleColor(role?: MapMarkerRole) {
+  if (!role) return ROLE_COLORS.default ?? "#2563eb";
+  return ROLE_COLORS[role] ?? ROLE_COLORS.default ?? "#2563eb";
+}
+
+function createMarkerIcon(color: string, label?: string) {
+  return L.divIcon({
+    className: "role-marker",
+    html: `
+      <span
+        style="
+          display:inline-flex;
+          align-items:center;
+          justify-content:center;
+          width:26px;
+          height:26px;
+          border-radius:9999px;
+          border:2px solid #fff;
+          box-shadow:0 3px 6px rgba(0,0,0,0.25);
+          background:${color};
+          color:#fff;
+          font-size:12px;
+          font-weight:600;
+        "
+      >${label ? label.charAt(0).toUpperCase() : ""}</span>
+    `,
+    iconSize: [28, 28],
+    iconAnchor: [14, 28],
+    popupAnchor: [0, -24],
+  });
+}
 
 export default function MapComponent({
   markers,
+  zones = [],
   center,
-  zoom = 13,
+  zoom = 5,
   className = "h-[500px] w-full",
 }: MapComponentProps) {
-  useEffect(() => {
-    L.Marker.prototype.options.icon = customIcon;
-  }, []);
+  const iconCacheRef = useRef<Record<string, L.DivIcon>>({});
 
-  const mapCenter: [number, number] =
-    center ?? (markers.length > 0 ? [markers[0].lat, markers[0].lng] : [0, 0]);
+  const mapCenter: [number, number] = useMemo(() => {
+    if (center) return center;
+    if (markers.length > 0) return [markers[0].lat, markers[0].lng];
+    if (zones.length > 0) return zones[0].coordinates[0];
+    return [0, 0];
+  }, [center, markers, zones]);
+
+  const getMarkerIcon = (marker: MapMarker) => {
+    const key = marker.role ?? "default";
+    if (!iconCacheRef.current[key]) {
+      iconCacheRef.current[key] = createMarkerIcon(getRoleColor(marker.role), marker.label);
+    }
+    return iconCacheRef.current[key];
+  };
 
   return (
     <MapContainer
@@ -51,8 +88,25 @@ export default function MapComponent({
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+      {zones.map((zone) => {
+        const color = zone.color ?? getRoleColor(zone.role);
+        return (
+          <Polygon
+            key={zone.id}
+            positions={zone.coordinates}
+            pathOptions={{
+              color,
+              fillColor: color,
+              fillOpacity: zone.fillOpacity ?? 0.2,
+              weight: 2,
+            }}
+          >
+            {zone.name && <Popup>{zone.name}</Popup>}
+          </Polygon>
+        );
+      })}
       {markers.map((marker, index) => (
-        <Marker key={index} position={[marker.lat, marker.lng]} icon={customIcon}>
+        <Marker key={`${marker.lat}-${marker.lng}-${index}`} position={[marker.lat, marker.lng]} icon={getMarkerIcon(marker)}>
           {marker.label && <Popup>{marker.label}</Popup>}
         </Marker>
       ))}

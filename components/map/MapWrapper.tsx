@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { MapMarker } from "./MapComponent";
+import type { MapMarker } from "@/types/map";
 
 interface MapWrapperProps {
   markers: MapMarker[];

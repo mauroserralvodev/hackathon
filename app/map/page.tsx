@@ -13,7 +13,7 @@ export default function MapPage() {
       <h1 className="text-2xl font-semibold text-neutral-900 mb-4">Venue Map</h1>
       <MapWrapper
         markers={SAMPLE_MARKERS}
-        center={[41.3851, 2.1734]}
+        center={[41.373336, 2.149162]}
         zoom={15}
         className="h-[600px] w-full rounded-xl overflow-hidden shadow"
       />
