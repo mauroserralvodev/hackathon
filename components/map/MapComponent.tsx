@@ -59,7 +59,7 @@ export default function MapComponent({
   zones = [],
   center,
   zoom = 5,
-  className = "h-[500px] w-full",
+  className = "h-125 w-full",
 }: MapComponentProps) {
   const iconCacheRef = useRef<Record<string, L.DivIcon>>({});
   const coordinateHelperIcon = useMemo(() => createMarkerIcon("#0f172a", "✦"), []);

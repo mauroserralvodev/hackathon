@@ -54,6 +54,30 @@ const SAMPLE_MAP_DATA: MapDataResponse = {
       role: "info",
       fillOpacity: 0.25,
     },
+    {
+      id: "zone-2",
+      name: "Zone 2",
+      coordinates: [
+        [41.3733111111, 2.1488361111],
+        [41.3735805556, 2.1495888889],
+        [41.3728111111, 2.1500694444],
+        [41.3725277778, 2.1492555556],
+      ],
+      color: "#06b6d4", // cian
+      fillOpacity: 0.22,
+    },
+    {
+      id: "zone-3",
+      name: "Zone 3",
+      coordinates: [
+        [41.37290, 2.14820],
+        [41.37290, 2.14920],
+        [41.37265, 2.14920],
+        [41.37265, 2.14820],
+      ],
+      color: "#a78bfa", // violeta
+      fillOpacity: 0.22,
+    },
   ],
 };
 

@@ -82,11 +82,11 @@ export default function LoginPanel() {
         />
       </div>
 
-      <div className="rounded-2xl border border-black/10 bg-white p-7">
-        <h1 className="text-lg text-neutral-800 tracking-tight">Sign in</h1>
+      <div className="">
+        {/* <h1 className="text-lg text-neutral-800 tracking-tight">Sign in</h1>
         <p className="mt-2 text-sm text-neutral-800">
           Use your Stage Flow credentials.
-        </p>
+        </p> */}
 
         <form className="mt-6 space-y-5" onSubmit={onSubmit}>
           <div>
@@ -132,7 +132,7 @@ export default function LoginPanel() {
           <button
             type="submit"
             disabled={!canSubmit}
-            className="h-11 w-full rounded-xl text-sm text-white transition active:scale-[0.99] disabled:opacity-50 disabled:active:scale-100"
+            className="h-11 w-full rounded-xl text-sm text-white transition active:scale-[0.99] disabled:opacity-50 disabled:active:scale-100 cursor-pointer"
             style={{ backgroundColor: BRAND }}
           >
             {loading ? "Signing in..." : "Continue"}

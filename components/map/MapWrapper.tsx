@@ -14,7 +14,7 @@ interface MapWrapperProps {
 const MapComponent = dynamic(() => import("./MapComponent"), {
   ssr: false,
   loading: () => (
-    <div className="flex items-center justify-center bg-neutral-100 h-[500px] w-full rounded-lg">
+    <div className="flex items-center justify-center bg-neutral-100 h-125 w-full rounded-lg">
       <span className="text-neutral-400 text-sm">Loading map…</span>
     </div>
   ),

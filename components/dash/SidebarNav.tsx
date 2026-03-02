@@ -37,7 +37,7 @@ export default function SidebarNav({ onNavigate }: Props) {
             className={[
               "block rounded-xl border px-3 py-2 text-sm text-neutral-800 transition",
               active
-                ? "border-black/10 bg-neutral-100"
+                ? "border-black/10 bg-neutral-50"
                 : "border-black/10 hover:bg-neutral-50",
             ].join(" ")}
           >
