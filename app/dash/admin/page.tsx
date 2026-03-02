@@ -1,4 +1,6 @@
 // app/dash/admin/page.tsx
+import { Card } from "@/components/ui/card";
+
 export default function AdminPage() {
   return (
     <div className="space-y-4">
@@ -13,15 +15,6 @@ export default function AdminPage() {
         <Card title="Staff registry" desc="Manage staff phone numbers and roles." />
         <Card title="Zones" desc="Define map areas and policies." />
       </div>
-    </div>
-  );
-}
-
-function Card({ title, desc }: { title: string; desc: string }) {
-  return (
-    <div className="rounded-xl border border-neutral-200 bg-white p-6 text-neutral-800">
-      <div className="text-sm tracking-tight">{title}</div>
-      <div className="mt-2 text-sm text-neutral-800">{desc}</div>
     </div>
   );
 }

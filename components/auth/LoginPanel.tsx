@@ -1,132 +1,131 @@
+// components/auth/LoginPanel.tsx
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
-import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { CircleX } from "lucide-react";
 
 const BRAND = "#FF8282";
 
+function normalizePhone(input: string) {
+  return input.replace(/[^\d+]/g, "").trim();
+}
+
 export default function LoginPanel() {
-  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
+
+  const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const phoneClean = useMemo(() => normalizePhone(phone), [phone]);
+  const canSubmit = phoneClean.length >= 6 && !loading;
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+
+    const p = normalizePhone(phone);
+    if (!p) {
+      setError("Enter your phone number.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone_number: p }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setError(data?.error || "Login failed.");
+        return;
+      }
+
+      // Demo MVP: guardar datos mínimos
+      localStorage.setItem("stageflow_user", JSON.stringify(data.user));
+
+      router.push(data.redirect_to || "/dash");
+    } catch (err) {
+      console.error(err);
+      setError("Login failed.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="w-full max-w-md">
-      
-      {/* Logo */}
-      <div className="absolute top-10 left-10">
+      <div className="absolute bottom-10 left-10">
         <Image
           src="/stageflow-banner.png"
           alt="Stage Flow logo"
-          width={200}
+          width={180}
           height={40}
         />
       </div>
+      <div className="mb-10">
+        <Image
+          src="/stageflow.png"
+          alt="Stage Flow logo"
+          width={160}
+          height={40}
+          priority
+        />
+      </div>
 
-      {/* Card */}
-      <div className="rounded-3xl p-4 sm:p-7">
-        <div className="w-full flex items-center justify-center">
-          <Image
-            src="/stageflow.png"
-            alt="Stage Flow logo"
-            width={170}
-            height={40}
-          />
-        </div>
-        
+      <div className="rounded-2xl border border-black/10 bg-white p-7">
+        <h1 className="text-lg text-neutral-800 tracking-tight">Sign in</h1>
+        <p className="mt-2 text-sm text-neutral-800">
+          Use your staff phone number.
+        </p>
 
-        {/* <p className="text-sm text-neutral-500 mt-3">
-          Access your staff dashboard
-        </p> */}
-
-        <form
-          className="mt-12 space-y-4"
-          onSubmit={(e) => e.preventDefault()}
-        >
+        <form className="mt-6 space-y-5" onSubmit={onSubmit}>
           <div>
-            <label className="block text-xs text-black/40">
-              Name
-            </label>    
-            <input
-              type="text"
-              placeholder="John Doe"
-              className="mt-2 h-11 w-full rounded-xl border border-neutral-200 px-3 text-sm text-neutral-800 outline-none focus:border-neutral-300"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs text-black/40">
-              Email
-            </label>            
-            <input
-              type="email"
-              placeholder="john@example.com"
-              className="mt-2 h-11 w-full rounded-xl border border-neutral-200 px-3 text-sm text-neutral-800 outline-none focus:border-neutral-300"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs text-black/40">
-              Phone Number
+            <label className="block text-sm text-neutral-400">
+              Phone number
             </label>
             <input
-              type="tel"
-              placeholder="+1 234 567 890"
-              className="mt-2 h-11 w-full rounded-xl border border-neutral-200 px-3 text-sm text-neutral-800 outline-none focus:border-neutral-300"
+              inputMode="tel"
+              autoComplete="tel"
+              placeholder="Phone number (e.g. 600 000 000)"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="mt-1 h-11 w-full rounded-xl border border-neutral-200 px-3 text-sm text-neutral-800 outline-none focus:border-neutral-300"
             />
           </div>
 
-          <div>
-            {/* Label + botón ? */}
-            <div className="flex items-center justify-between">
-              <label className="block text-xs text-black/40">
-                Password
-              </label>
-
-              <div className="relative group ml-2">
-                <button
-                  type="button"
-                  className="text-xs text-neutral-500 hover:text-black px-2.5 py-0.5 w-5 flex items-center justify-center rounded-full bg-neutral-100"
-                  aria-label="Password help"
-                >
-                  ?
-                </button>
-
-                {/* Tooltip */}
-                <div className="absolute z-10 right-0 mt-15 w-64 rounded-xl bg-neutral-50 border border-black/10 px-3 py-2 text-xs text-black opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all duration-200">
-                  Enter the password that was provided to you in the email.
-                </div>
-              </div>
-            </div>
-
-            {/* Input */}
-            <div className="relative mt-2">
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="••••••••"
-                className="h-11 w-full rounded-xl border border-neutral-200 px-3 pr-12 text-sm text-neutral-800 outline-none focus:border-neutral-300"
-              />
-
-              {/* Botón ojo */}
-              <button
-                type="button"
-                onClick={() => setShowPassword((v) => !v)}
-                className="absolute inset-y-0 right-0 px-4 flex items-center text-neutral-500 hover:text-black cursor-pointer"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
-              </button>
-            </div>
+          <div className="mb-8">
+            <label className="block text-sm text-neutral-400">
+              Verification code
+            </label>
+            <input
+              inputMode="text"
+              placeholder="Verification Code (e.g. xX-6as7...kM4)"
+              className="mt-1 h-11 w-full rounded-xl border border-neutral-200 px-3 text-sm text-neutral-800 outline-none focus:border-neutral-300"
+            />
           </div>
+
+          {error && (
+            <div className="rounded-xl border border-blue-200 bg-blue-50 p-3 text-sm text-blue-400 flex items-center justify-start">
+              <CircleX size={15} /><span className="pl-2">{error}</span>
+            </div>
+          )}
 
           <button
             type="submit"
-            className="mt-15 h-11 w-full rounded-xl text-sm text-white transition active:scale-[0.99] cursor-pointer"
+            disabled={!canSubmit}
+            className="h-11 w-full rounded-xl text-sm text-white transition active:scale-[0.99] disabled:opacity-50 disabled:active:scale-100"
             style={{ backgroundColor: BRAND }}
           >
-            Continue
+            {loading ? "Signing in..." : "Continue"}
           </button>
         </form>
-
       </div>
     </div>
   );
