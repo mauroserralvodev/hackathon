@@ -4,6 +4,7 @@ import { useMemo, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Polygon } from "react-leaflet";
 import L from "leaflet";
 import type { MapMarker, MapMarkerRole, MapZone } from "@/types/map";
+import ClickCoordinateMarker from "./ClickCoordinateMarker";
 
 interface MapComponentProps {
   markers: MapMarker[];
@@ -54,13 +55,14 @@ function createMarkerIcon(color: string, label?: string) {
 }
 
 export default function MapComponent({
-  markers,
+  markers=[],
   zones = [],
   center,
   zoom = 5,
   className = "h-[500px] w-full",
 }: MapComponentProps) {
   const iconCacheRef = useRef<Record<string, L.DivIcon>>({});
+  const coordinateHelperIcon = useMemo(() => createMarkerIcon("#0f172a", "✦"), []);
 
   const mapCenter: [number, number] = useMemo(() => {
     if (center) return center;
@@ -76,7 +78,6 @@ export default function MapComponent({
     }
     return iconCacheRef.current[key];
   };
-
   return (
     <MapContainer
       center={mapCenter}
@@ -110,6 +111,7 @@ export default function MapComponent({
           {marker.label && <Popup>{marker.label}</Popup>}
         </Marker>
       ))}
+      <ClickCoordinateMarker icon={coordinateHelperIcon} />
     </MapContainer>
   );
 }

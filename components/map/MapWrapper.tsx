@@ -1,10 +1,11 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { MapMarker } from "@/types/map";
+import type { MapMarker, MapZone } from "@/types/map";
 
 interface MapWrapperProps {
   markers: MapMarker[];
+  zones?: MapZone[];
   center?: [number, number];
   zoom?: number;
   className?: string;

@@ -2,11 +2,12 @@ import { NextResponse } from "next/server";
 import type { MapDataResponse } from "@/types/map";
 
 const SAMPLE_MAP_DATA: MapDataResponse = {
-  center: [41.3855, 2.1733],
-  zoom: 15,
+  center: [41.373028, 2.149671],
+  zoom: 18,
   markers: [
-    { lat: 41.3851, lng: 2.1734, label: "Main Stage", role: "stage" },
-    { lat: 41.3865, lng: 2.175, label: "Second Stage", role: "stage" },
+    { lat: 41.37372, lng: 2.14881, label: "Main Stage", role: "stage" },
+    { lat: 41.37306, lng: 2.14941, label: "Second Stage", role: "stage" },
+    { lat: 41.37207, lng: 2.15009, label: "Third Stage", role: "stage" },
     { lat: 41.384, lng: 2.172, label: "Food & Drinks", role: "food" },
     { lat: 41.3858, lng: 2.171, label: "Info Point", role: "info" },
     { lat: 41.385, lng: 2.169, label: "Backstage HQ", role: "support" },
@@ -17,10 +18,14 @@ const SAMPLE_MAP_DATA: MapDataResponse = {
       id: "main-arena",
       name: "Main Arena",
       coordinates: [
-        [41.3867, 2.1715],
-        [41.3862, 2.176],
-        [41.3848, 2.1754],
-        [41.3848, 2.1712],
+        [41.37331, 2.14871],
+        [41.37359, 2.14955],
+        [41.37390, 2.14934],
+        [41.37393, 2.14872],
+        [41.37409, 2.14831],
+        [41.37354, 2.14758],
+        [41.37341, 2.14772],
+        [41.37365, 2.14852],
       ],
       role: "stage",
       fillOpacity: 0.2,
@@ -52,6 +57,6 @@ const SAMPLE_MAP_DATA: MapDataResponse = {
   ],
 };
 
-export async function GET() {
+export async function GET(): Promise<Response> {
   return NextResponse.json(SAMPLE_MAP_DATA);
 }
