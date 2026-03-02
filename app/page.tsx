@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-black">
       <div className="grid min-h-screen grid-cols-1 lg:grid-cols-2">
         
         {/* Left - Image */}
@@ -14,12 +14,12 @@ export default function Page() {
             alt="Festival background"
             fill
             priority
-            className="object-cover"
+            className="object-cover opacity-65"
           />
         </section>
 
         {/* Right - Login */}
-        <section className="flex items-center justify-center px-6 py-10">
+        <section className="flex items-center justify-center px-6 py-10 bg-white">
           <LoginPanel />
         </section>
 
