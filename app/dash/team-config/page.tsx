@@ -16,6 +16,12 @@ const FALLBACK_MEMBERS: TeamMember[] = [
   { id: "demo-1", name: "Avery Park", phone: "+34 600 111 222", role: "Ops Lead" },
   { id: "demo-2", name: "Noa Fernández", phone: "+34 600 333 444", role: "Comms" },
   { id: "demo-3", name: "Iria Muñoz", phone: "+34 600 555 666", role: "Logistics" },
+  { id: "demo-4", name: "Lucas Martín", phone: "+34 600 777 888", role: "Security" },
+  { id: "demo-5", name: "Clara Gómez", phone: "+34 600 999 000", role: "Operations" },
+  { id: "demo-6", name: "Mateo Ruiz", phone: "+34 611 123 456", role: "On-site Support" },
+  { id: "demo-7", name: "Elena Torres", phone: "+34 611 234 567", role: "Stage Coordination" },
+  { id: "demo-8", name: "Daniel Navarro", phone: "+34 611 345 678", role: "Access Control" },
+  { id: "demo-9", name: "Sofía López", phone: "+34 611 456 789", role: "Vendor Liaison" },
 ];
 
 function normalizeMembers(payload: unknown): TeamMember[] {
@@ -93,7 +99,7 @@ export default function TeamConfigPage() {
         if (!TEAM_MEMBERS_ENDPOINT) {
           setMembers(FALLBACK_MEMBERS);
           setUsingFallback(true);
-          setError("Set NEXT_PUBLIC_TEAM_MEMBERS_API_URL to load real data.");
+          // setError("Set NEXT_PUBLIC_TEAM_MEMBERS_API_URL to load real data.");
           return;
         }
 

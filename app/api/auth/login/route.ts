@@ -25,7 +25,6 @@ export async function POST(req: Request) {
       cache: "no-store",
     });
 
-    // Si NO es 200-299, devolvemos invalid credentials (o el error del backend si lo trae)
     if (!upstreamRes.ok) {
       let msg = "Invalid credentials";
       try {
@@ -34,15 +33,13 @@ export async function POST(req: Request) {
         if (j?.detail) msg = String(j.detail);
         else if (j?.error) msg = String(j.error);
       } catch {
-        // ignore
       }
 
       return NextResponse.json({ error: msg }, { status: 401 });
     }
 
-    // Si es 200, para el MVP ya está: login OK
     const redirect_to =
-      username.toLowerCase() === "admin" ? "/dash/admin" : "/dash/staff";
+      username.toLowerCase() === "admin" ? "/dash/team-config" : "/dash/team-config";
 
     return NextResponse.json({
       ok: true,

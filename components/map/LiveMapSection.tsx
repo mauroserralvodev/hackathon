@@ -56,7 +56,7 @@ function LiveMapContent() {
         zones={mergedData.zones}
         center={mergedData.center}
         zoom={mergedData.zoom}
-        className="h-[600px] w-full rounded-xl overflow-hidden shadow"
+        className="h-150 w-full rounded-xl overflow-hidden shadow"
       />
     </div>
   );
