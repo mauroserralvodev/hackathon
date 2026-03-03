@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useRef } from "react";
 import MapWrapper from "./MapWrapper";
 import { MarkersProvider, useMarkersData } from "./MarkersProvider";
 import { SAMPLE_MAP_DATA } from "@/lib/sampleMapData";
@@ -21,6 +22,12 @@ function getStatusKey(status?: string) {
 
 function LiveMapContent() {
   const { data, status, error, lastUpdated, reconnect } = useMarkersData();
+  const lastComplete = useRef(SAMPLE_MAP_DATA);
+  const mergedData = useMemo(() => {
+    if (!data) return lastComplete.current;
+    lastComplete.current = { ...lastComplete.current, ...data };
+    return lastComplete.current;
+  }, [data]);
   const statusKey = getStatusKey(status);
   const statusMeta = STATUS_COPY[statusKey];
 
@@ -45,10 +52,10 @@ function LiveMapContent() {
       </div>
       {error && <p className="text-sm text-rose-600">{error}</p>}
       <MapWrapper
-        markers={data.markers}
-        zones={data.zones}
-        center={data.center}
-        zoom={data.zoom}
+        markers={mergedData.markers}
+        zones={mergedData.zones}
+        center={mergedData.center}
+        zoom={mergedData.zoom}
         className="h-[600px] w-full rounded-xl overflow-hidden shadow"
       />
     </div>

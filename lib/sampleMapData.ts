@@ -69,10 +69,10 @@ export const SAMPLE_MAP_DATA: MapDataResponse = {
       id: "zone-3",
       name: "Zone 3",
       coordinates: [
-        [41.37290, 2.14820],
-        [41.37290, 2.14920],
-        [41.37265, 2.14920],
-        [41.37265, 2.14820],
+        [41.37250, 2.14934],
+        [41.37275, 2.15009],
+        [41.37177, 2.15079], 
+        [41.37154, 2.15005],
       ],
       color: "#a78bfa", // violeta
       fillOpacity: 0.22,

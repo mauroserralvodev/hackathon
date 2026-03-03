@@ -13,7 +13,7 @@ import {
 import { SAMPLE_MAP_DATA } from "@/lib/sampleMapData";
 import type { MapDataResponse, MapMarker, MapZone } from "@/types/map";
 
-const SOCKET_URL = "ws://a220-95-215-123-97.ngrok-free.app/ws/markers";
+const DEFAULT_SOCKET_URL = "ws://a220-95-215-123-97.ngrok-free.app/ws/markers";
 
 type ConnectionStatus = "idle" | "connecting" | "open" | "closed" | "error";
 
@@ -48,13 +48,25 @@ function isMapZone(value: unknown): value is MapZone {
   return typeof zone.id === "string" && coordinatesValid;
 }
 
-function isMapDataResponse(payload: unknown): payload is MapDataResponse {
+type MapDataUpdate = Partial<MapDataResponse>;
+
+function hasMapDataFields(update: MapDataUpdate) {
+  return (
+    Object.prototype.hasOwnProperty.call(update, "markers") ||
+    Object.prototype.hasOwnProperty.call(update, "zones") ||
+    Object.prototype.hasOwnProperty.call(update, "center") ||
+    Object.prototype.hasOwnProperty.call(update, "zoom")
+  );
+}
+
+function isMapDataUpdate(payload: unknown): payload is MapDataUpdate {
   if (!payload || typeof payload !== "object") return false;
-  const data = payload as Partial<MapDataResponse>;
-  const markersValid = Array.isArray(data.markers) ? data.markers.every(isMapMarker) : false;
-  const zonesValid = Array.isArray(data.zones) ? data.zones.every(isMapZone) : false;
+  const data = payload as MapDataUpdate;
+  const markersValid =
+    data.markers === undefined || (Array.isArray(data.markers) && data.markers.every(isMapMarker));
+  const zonesValid = data.zones === undefined || (Array.isArray(data.zones) && data.zones.every(isMapZone));
   const centerValid =
-    !data.center ||
+    data.center === undefined ||
     (Array.isArray(data.center) &&
       data.center.length === 2 &&
       typeof data.center[0] === "number" &&
@@ -73,6 +85,14 @@ export function MarkersProvider({ children, fallbackData = SAMPLE_MAP_DATA }: Pr
   const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const reconnectAttemptsRef = useRef(0);
 
+  const resolveSocketUrl = useCallback(() => {
+    const configuredUrl = process.env.NEXT_PUBLIC_MARKERS_SOCKET_URL ?? DEFAULT_SOCKET_URL;
+    if (typeof window !== "undefined" && window.location.protocol === "https:" && configuredUrl.startsWith("ws://")) {
+      return configuredUrl.replace("ws://", "wss://");
+    }
+    return configuredUrl;
+  }, []);
+
   const clearReconnectTimer = useCallback(() => {
     if (reconnectTimeoutRef.current) {
       clearTimeout(reconnectTimeoutRef.current);
@@ -81,19 +101,34 @@ export function MarkersProvider({ children, fallbackData = SAMPLE_MAP_DATA }: Pr
   }, []);
 
   const cleanupSocket = useCallback(() => {
-    wsRef.current?.close();
-    wsRef.current = null;
+    if (wsRef.current) {
+      wsRef.current.onopen = null;
+      wsRef.current.onerror = null;
+      wsRef.current.onmessage = null;
+      wsRef.current.onclose = null;
+      wsRef.current.close();
+      wsRef.current = null;
+    }
   }, []);
 
   const connect = useCallback(() => {
     clearReconnectTimer();
-    cleanupSocket();
+
+    if (wsRef.current) {
+      const { readyState } = wsRef.current;
+      if (readyState === WebSocket.OPEN || readyState === WebSocket.CONNECTING) {
+        return;
+      }
+      cleanupSocket();
+    }
 
     setStatus("connecting");
     setError(undefined);
 
     try {
-      wsRef.current = new WebSocket(SOCKET_URL);
+      console.log("Im about to new WebSocket")
+      const socketUrl = resolveSocketUrl();
+      wsRef.current = new WebSocket(socketUrl);
     } catch (connectionError) {
       setStatus("error");
       setError(connectionError instanceof Error ? connectionError.message : "Unable to create WebSocket connection");
@@ -111,18 +146,16 @@ export function MarkersProvider({ children, fallbackData = SAMPLE_MAP_DATA }: Pr
       console.error(error)
       setStatus("error");
       setError("WebSocket encountered an error");
+      socket.close();
     };
 
     socket.onmessage = (event: MessageEvent<string>) => {
-      console.log("new tcp message: ", event)
       try {
         const payload = JSON.parse(event.data);
-        if (isMapDataResponse(payload)) {
           setData(payload);
           setLastUpdated(Date.now());
           setStatus("open");
           setError(undefined);
-        }
       } catch (parseError) {
         setError(parseError instanceof Error ? parseError.message : "Unable to parse websocket payload");
       }
@@ -137,7 +170,7 @@ export function MarkersProvider({ children, fallbackData = SAMPLE_MAP_DATA }: Pr
         connect();
       }, retryDelay);
     };
-  }, [cleanupSocket, clearReconnectTimer]);
+  }, [cleanupSocket, clearReconnectTimer, resolveSocketUrl]);
 
   const reconnect = useCallback(() => {
     reconnectAttemptsRef.current = 0;
