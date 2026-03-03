@@ -20,12 +20,24 @@ function getStatusKey(status?: string) {
   return "idle";
 }
 
+let messageFrames = 0;
+
+const SIMULATED_MARKER_PATH = [
+  { lat: 41.37305, lng: 2.15077 },
+  { lat: 41.37509, lng: 2.15117 },
+  { lat: 41.37437, lng: 2.14822 },
+  { lat: 41.37397, lng: 2.14874 },
+];
+
 function LiveMapContent() {
   const { data, status, error, lastUpdated, reconnect } = useMarkersData();
   const lastComplete = useRef(SAMPLE_MAP_DATA);
+  // console.log("message frames", messageFrames);
   const mergedData = useMemo(() => {
+    messageFrames++;
     if (!data) return lastComplete.current;
     lastComplete.current = { ...lastComplete.current, ...data };
+    // updateFakeMarker(data.markers, messageFrames);
     return lastComplete.current;
   }, [data]);
   const statusKey = getStatusKey(status);
@@ -60,6 +72,23 @@ function LiveMapContent() {
       />
     </div>
   );
+}
+
+let index = 0;
+function updateFakeMarker(markers: MapMarker[], frame: number) {
+  let targetIndex
+  let target
+  if (frame>6&&(!markers?.length || frame % 3)) {
+    targetIndex = Math.min(index++, SIMULATED_MARKER_PATH.length - 1);
+    target = SIMULATED_MARKER_PATH[targetIndex];
+    markers[0].lat = target.lat;
+    markers[0].lng = target.lng;
+  }
+
+
+
+  markers[0].label = `Evgeny ${targetIndex}`;
+  markers[0].role = "support";
 }
 
 export default function LiveMapSection() {

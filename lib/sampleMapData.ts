@@ -4,9 +4,9 @@ export const SAMPLE_MAP_DATA: MapDataResponse = {
   center: [41.373028, 2.149671],
   zoom: 18,
   markers: [
-    { lat: 41.37372, lng: 2.14881, label: "Main Stage", role: "stage" },
-    { lat: 41.37306, lng: 2.14941, label: "Second Stage", role: "stage" },
-    { lat: 41.37207, lng: 2.15009, label: "Third Stage", role: "stage" },
+    { lat: 41.37372, lng: 2.14881, label: "Evgeny", role: "support" },
+    { lat: 41.37306, lng: 2.14941, label: "Staff 2", role: "stage" },
+    { lat: 41.37207, lng: 2.15009, label: "Staff 3", role: "stage" },
     { lat: 41.384, lng: 2.172, label: "Food & Drinks", role: "food" },
     { lat: 41.3858, lng: 2.171, label: "Info Point", role: "info" },
     { lat: 41.385, lng: 2.169, label: "Backstage HQ", role: "support" },
